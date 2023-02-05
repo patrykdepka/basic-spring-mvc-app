@@ -15,6 +15,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated());
         http.formLogin(login -> login.loginPage("/login").permitAll());
         http.csrf().disable();
+        http.headers().frameOptions().disable();
         return http.build();
     }
 
