@@ -8,6 +8,7 @@
     <link href="../static/styles/main.css" th:href="@{/styles/main.css}" rel="stylesheet"/>
 </head>
 <body>
+<nav th:replace="fragments :: navbar"></nav>
 <div class="form-container">
     <form id="loginForm" name="loginForm" class="custom-form" onsubmit="return validateLoginForm();" method="post" th:method="post" action="#" th:action="@{/login}">
         <div class="form-heading">
@@ -40,6 +41,7 @@
     </form>
 </div>
 
+<th:block th:replace="fragments :: scripts"></th:block>
 <script type="text/javascript" src="../static/scripts/validation.js" th:src="@{/scripts/validation.js}"></script>
 </body>
 </html>
