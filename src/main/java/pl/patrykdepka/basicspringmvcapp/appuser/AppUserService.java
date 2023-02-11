@@ -22,6 +22,10 @@ public class AppUserService implements IAppUserService {
         this.appUserRoleRepository = appUserRoleRepository;
     }
 
+    public boolean checkIfUserExists(String email) {
+        return appUserRepository.findByEmail(email).isPresent();
+    }
+
     @Transactional
     public void createUser(AppUserRegistrationDTO userRegistration) {
         AppUser user = new AppUser();
