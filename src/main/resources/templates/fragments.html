@@ -13,6 +13,19 @@
     <a class="navbar-brand" href="#" th:href="@{/}">Basic Spring MVC App</a>
     <div class="collapse navbar-collapse">
         <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown" sec:authorize="isAuthenticated() && hasRole('ADMIN')">
+                <a class="nav-link dropdown-toggle"
+                   href="#"
+                   id="navbarDropdownMenuAdminPanelLink"
+                   data-toggle="dropdown"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+                    Panel administratora
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuAdminPanelLink">
+                    <a class="dropdown-item" th:href="@{/admin-panel/users}">Użytkownicy</a>
+                </div>
+            </li>
             <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                 <a class="nav-link dropdown-toggle"
                    href="#"

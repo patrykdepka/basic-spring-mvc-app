@@ -4,9 +4,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserRegistrationDTO;
+import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserTableAPDTO;
+import pl.patrykdepka.basicspringmvcapp.appuser.mapper.AppUserTableAPDTOMapper;
 import pl.patrykdepka.basicspringmvcapp.appuserrole.AppUserRole;
 import pl.patrykdepka.basicspringmvcapp.appuserrole.AppUserRoleRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,5 +46,9 @@ public class AppUserService implements IAppUserService {
                 }
         );
         appUserRepository.save(user);
+    }
+
+    public List<AppUserTableAPDTO> findAllUsers() {
+        return AppUserTableAPDTOMapper.mapToAppUserTableAPDTOs(appUserRepository.findAllUsers());
     }
 }

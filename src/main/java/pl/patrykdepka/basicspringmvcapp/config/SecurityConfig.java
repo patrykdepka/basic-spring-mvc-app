@@ -30,6 +30,7 @@ public class SecurityConfig {
                 .mvcMatchers("/").permitAll()
                 .mvcMatchers("/login**").permitAll()
                 .mvcMatchers("/register", "/confirmation").permitAll()
+                .mvcMatchers("/admin_panel/**").hasRole("ADMIN")
                 .anyRequest().authenticated());
         http.formLogin(login -> login
                 .loginPage("/login").permitAll()

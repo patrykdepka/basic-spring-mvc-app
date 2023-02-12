@@ -52,4 +52,10 @@ public class AppUserController {
     public String registrationConfirmation() {
         return "registration-confirmation";
     }
+
+    @GetMapping("/admin-panel/users")
+    public String getAllUsers(Model model) {
+        model.addAttribute("users", iAppUserService.findAllUsers());
+        return "admin/app-users-table";
+    }
 }
