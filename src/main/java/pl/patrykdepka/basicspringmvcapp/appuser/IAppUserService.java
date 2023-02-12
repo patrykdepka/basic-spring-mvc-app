@@ -1,9 +1,9 @@
 package pl.patrykdepka.basicspringmvcapp.appuser;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserRegistrationDTO;
 import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserTableAPDTO;
-
-import java.util.List;
 
 public interface IAppUserService {
 
@@ -11,5 +11,5 @@ public interface IAppUserService {
 
     void createUser(AppUserRegistrationDTO userRegistration);
 
-    List<AppUserTableAPDTO> findAllUsers();
+    Page<AppUserTableAPDTO> findAllUsers(Pageable pageable);
 }

@@ -1,5 +1,7 @@
 package pl.patrykdepka.basicspringmvcapp.appuser;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,7 +11,6 @@ import pl.patrykdepka.basicspringmvcapp.appuser.mapper.AppUserTableAPDTOMapper;
 import pl.patrykdepka.basicspringmvcapp.appuserrole.AppUserRole;
 import pl.patrykdepka.basicspringmvcapp.appuserrole.AppUserRoleRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -48,7 +49,7 @@ public class AppUserService implements IAppUserService {
         appUserRepository.save(user);
     }
 
-    public List<AppUserTableAPDTO> findAllUsers() {
-        return AppUserTableAPDTOMapper.mapToAppUserTableAPDTOs(appUserRepository.findAllUsers());
+    public Page<AppUserTableAPDTO> findAllUsers(Pageable pageable) {
+        return AppUserTableAPDTOMapper.mapToAppUserTableAPDTOs(appUserRepository.findAllUsers(pageable));
     }
 }

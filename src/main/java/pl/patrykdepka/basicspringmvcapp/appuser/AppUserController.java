@@ -1,6 +1,9 @@
 package pl.patrykdepka.basicspringmvcapp.appuser;
 
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -8,7 +11,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserRegistrationDTO;
+import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserTableAPDTO;
 
 import javax.validation.Valid;
 import java.util.Locale;
@@ -54,8 +59,22 @@ public class AppUserController {
     }
 
     @GetMapping("/admin-panel/users")
-    public String getAllUsers(Model model) {
-        model.addAttribute("users", iAppUserService.findAllUsers());
-        return "admin/app-users-table";
+    public String getAllUsers(@RequestParam(name = "page", required = false) Integer pageNumber, Model model) {
+        int page = pageNumber != null ? pageNumber : 1;
+
+        if (page > 0) {
+            PageRequest pageRequest = PageRequest.of(page - 1, 10, Sort.by(Sort.Direction.fromString("asc"), "lastName"));
+            Page<AppUserTableAPDTO> users = iAppUserService.findAllUsers(pageRequest);
+
+            if (page <= users.getTotalPages()) {
+                model.addAttribute("users", users);
+                model.addAttribute("prefixUrl", "/admin-panel/users?");
+                return "admin/app-users-table";
+            } else {
+                return "redirect:/admin-panel/users?page=" + users.getTotalPages();
+            }
+        } else {
+            return "redirect:/admin-panel/users?page=1";
+        }
     }
 }
