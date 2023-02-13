@@ -59,21 +59,37 @@ public class AppUserController {
     }
 
     @GetMapping("/admin-panel/users")
-    public String getAllUsers(@RequestParam(name = "page", required = false) Integer pageNumber, Model model) {
+    public String getAllUsers(@RequestParam(name = "page", required = false) Integer pageNumber,
+                              @RequestParam(name = "sort_by", required = false) String sortProperty,
+                              @RequestParam(name = "order_by", required = false) String sortDirection,
+                              Model model) {
         int page = pageNumber != null ? pageNumber : 1;
+        String property = sortProperty != null && !"".equals(sortProperty) ? sortProperty : "lastName";
+        String direction = sortDirection != null && !"".equals(sortDirection) ? sortDirection : "asc";
 
         if (page > 0) {
-            PageRequest pageRequest = PageRequest.of(page - 1, 10, Sort.by(Sort.Direction.fromString("asc"), "lastName"));
+            PageRequest pageRequest = PageRequest.of(page - 1, 10, Sort.by(Sort.Direction.fromString(direction), property));
             Page<AppUserTableAPDTO> users = iAppUserService.findAllUsers(pageRequest);
 
             if (page <= users.getTotalPages()) {
                 model.addAttribute("users", users);
                 model.addAttribute("prefixUrl", "/admin-panel/users?");
+
+                if (sortProperty != null) {
+                    String sortParams = "sort_by=" + sortProperty + "&order_by=" + sortDirection;
+                    model.addAttribute("sortParams", sortParams);
+                }
                 return "admin/app-users-table";
             } else {
+                if ((sortProperty != null && !"".equals(sortProperty)) && (sortDirection != null && !"".equals(sortDirection))) {
+                    return "redirect:/admin-panel/users?page=" + users.getTotalPages() + "&sort_by=" + sortProperty + "&order_by=" + sortDirection;
+                }
                 return "redirect:/admin-panel/users?page=" + users.getTotalPages();
             }
         } else {
+            if ((sortProperty != null && !"".equals(sortProperty)) && (sortDirection != null && !"".equals(sortDirection))) {
+                return "redirect:/admin-panel/users?page=1" + "&sort_by=" + sortProperty + "&order_by=" + sortDirection;
+            }
             return "redirect:/admin-panel/users?page=1";
         }
     }
