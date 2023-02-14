@@ -52,4 +52,20 @@ public class AppUserService implements IAppUserService {
     public Page<AppUserTableAPDTO> findAllUsers(Pageable pageable) {
         return AppUserTableAPDTOMapper.mapToAppUserTableAPDTOs(appUserRepository.findAllUsers(pageable));
     }
+
+    public Page<AppUserTableAPDTO> findUsersBySearch(String searchQuery, Pageable pageable) {
+        searchQuery = searchQuery.toLowerCase();
+        String[] searchWords = searchQuery.split(" ");
+
+        if (searchWords.length == 1 && !"".equals(searchWords[0])) {
+            return AppUserTableAPDTOMapper
+                    .mapToAppUserTableAPDTOs(appUserRepository.findAll(AppUserSpecification.bySearch(searchWords[0]), pageable));
+        }
+        if (searchWords.length == 2) {
+            return AppUserTableAPDTOMapper
+                    .mapToAppUserTableAPDTOs(appUserRepository.findAll(AppUserSpecification.bySearch(searchWords[0], searchWords[1]), pageable));
+        }
+
+        return Page.empty();
+    }
 }

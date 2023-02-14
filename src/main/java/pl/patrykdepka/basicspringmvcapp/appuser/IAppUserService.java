@@ -12,4 +12,6 @@ public interface IAppUserService {
     void createUser(AppUserRegistrationDTO userRegistration);
 
     Page<AppUserTableAPDTO> findAllUsers(Pageable pageable);
+
+    Page<AppUserTableAPDTO> findUsersBySearch(String searchQuery, Pageable pageable);
 }

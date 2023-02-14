@@ -2,12 +2,13 @@ package pl.patrykdepka.basicspringmvcapp.appuser;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.Optional;
 
-public interface AppUserRepository extends PagingAndSortingRepository<AppUser, Long> {
+public interface AppUserRepository extends PagingAndSortingRepository<AppUser, Long>, JpaSpecificationExecutor<AppUser> {
 
     Optional<AppUser> findByEmail(String email);
 

@@ -93,4 +93,55 @@ public class AppUserController {
             return "redirect:/admin-panel/users?page=1";
         }
     }
+
+    @GetMapping("/admin-panel/users/results")
+    public String getUsersBySearch(@RequestParam(name = "search_query", required = false) String searchQuery,
+                                   @RequestParam(name = "page", required = false) Integer pageNumber,
+                                   @RequestParam(name = "sort_by", required = false) String sortProperty,
+                                   @RequestParam(name = "order_by", required = false) String sortDirection,
+                                   Model model) {
+        if (searchQuery != null) {
+            int page = pageNumber != null ? pageNumber : 1;
+            String property = sortProperty != null && !"".equals(sortProperty) ? sortProperty : "lastName";
+            String direction = sortDirection != null && !"".equals(sortDirection) ? sortDirection : "asc";
+
+            if (page > 0) {
+                PageRequest pageRequest = PageRequest.of(page - 1, 10, Sort.by(Sort.Direction.fromString(direction), property));
+                Page<AppUserTableAPDTO> users = iAppUserService.findUsersBySearch(searchQuery, pageRequest);
+
+                if (users.getNumberOfElements() == 0) {
+                    model.addAttribute("users", users);
+                    if (page > 1) {
+                        if (sortProperty != null) {
+                            return "redirect:/admin-panel/users/results?search_query=" + searchQuery + "&sort_by=" + sortProperty;
+                        }
+                        return "redirect:/admin-panel/users/results?search_query=" + searchQuery;
+                    } else {
+                        model.addAttribute("prefixUrl", "/admin-panel/users/results?search_query=" + searchQuery + "&");
+                        return "admin/app-users-table";
+                    }
+                } else if (page <= users.getTotalPages()) {
+                    model.addAttribute("users", users);
+                    searchQuery = searchQuery.replace(" ", "+");
+                    model.addAttribute("searchQuery", searchQuery);
+                    model.addAttribute("prefixUrl", "/admin-panel/users/results?search_query=" + searchQuery + "&");
+                    return "admin/app-users-table";
+                } else {
+                    searchQuery = searchQuery.replace(" ", "+");
+                    if (sortProperty != null) {
+                        return "redirect:/admin-panel/users/results?search_query=" + searchQuery + "&page=" + users.getTotalPages() + "&sort_by=" + sortProperty;
+                    }
+                    return "redirect:/admin-panel/users/results?search_query=" + searchQuery + "&page=" + users.getTotalPages();
+                }
+            } else {
+                searchQuery = searchQuery.replace(" ", "+");
+                if (sortProperty != null) {
+                    return "redirect:/admin-panel/users/results?search_query=" + searchQuery + "&page=1" + "&sort_by=" + sortProperty;
+                }
+                return "redirect:/admin-panel/users/results?search_query=" + searchQuery + "&page=1";
+            }
+        } else {
+            return "redirect:/admin-panel/users/results?search_query=";
+        }
+    }
 }
