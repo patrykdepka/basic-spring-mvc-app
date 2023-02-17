@@ -157,12 +157,19 @@ public class AppUserController {
 
     @PatchMapping("/admin-panel/users/{id}/settings/account")
     public String updateUserAccount(@PathVariable Long id,
-                                    @ModelAttribute(name = "editUserAccountDataDTO") EditAppUserAccountDataDTO editUserAccountDataDTO,
+                                    @Valid @ModelAttribute(name = "editUserAccountDataDTO") EditAppUserAccountDataDTO editUserAccountDataDTO,
+                                    BindingResult bindingResult,
                                     Model model) {
-        model.addAttribute("userId", id);
-        model.addAttribute("editUserAccountDataDTO", iAppUserService.updateUserAccountData(id, editUserAccountDataDTO));
-        model.addAttribute("accountUpdated", true);
-        model.addAttribute("userRoles", appUserRoleService.findAllUserRoles());
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("accountUpdated", false);
+            model.addAttribute("userId", id);
+            model.addAttribute("userRoles", appUserRoleService.findAllUserRoles());
+        } else {
+            model.addAttribute("userId", id);
+            model.addAttribute("editUserAccountDataDTO", iAppUserService.updateUserAccountData(id, editUserAccountDataDTO));
+            model.addAttribute("accountUpdated", true);
+            model.addAttribute("userRoles", appUserRoleService.findAllUserRoles());
+        }
         return "admin/forms/app-user-account-edit-form";
     }
 }

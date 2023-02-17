@@ -29,25 +29,28 @@
                 <div class="form-group">
                     <label for="enabled" class="form-label">WŁĄCZONY</label>
                     <select id="enabled" name="enabled" th:field="*{enabled}"
-                            class="form-control">
+                            class="form-control" th:class="${#fields.hasErrors('enabled')} == FALSE ? 'form-control' : 'form-control is-invalid'">
                         <option th:value="'true'" th:text="'Tak'">Tak</option>
                         <option th:value="'false'" th:text="'Nie'">Nie</option>
                     </select>
+                    <div class="error-message" th:errors="*{enabled}">Błędy związane z polem włączony</div>
                 </div>
                 <div class="form-group">
                     <label for="accountNonLocked" class="form-label">ZABLOKOWANY</label>
                     <select id="accountNonLocked" name="accountNonLocked" th:field="*{accountNonLocked}"
-                            class="form-control">
+                            class="form-control" th:class="${#fields.hasErrors('accountNonLocked')} == FALSE ? 'form-control' : 'form-control is-invalid'">
                         <option th:value="'true'" th:text="'Nie'">Nie</option>
                         <option th:value="'false'" th:text="'Tak'">Tak</option>
                     </select>
+                    <div class="error-message" th:errors="*{accountNonLocked}">Błędy związane z polem zablokowany</div>
                 </div>
                 <div class="form-group">
                     <label for="roles" class="form-label">ROLA</label>
                     <select id="roles" name="roles" th:field="*{roleId}"
-                            class="form-control">
+                            class="form-control" th:class="${#fields.hasErrors('roleId')} == FALSE ? 'form-control' : 'form-control is-invalid'">
                         <option th:each="userRole: ${userRoles}" th:value="${userRole.id}" th:text="${userRole.displayName}">Użytkownik</option>
                     </select>
+                    <div class="error-message" th:errors="*{roleId}">Błędy związane z rolą</div>
                 </div>
                 <div class="d-grid gap-2 col-5 mx-auto" style="margin: 8px 0 8px 0;">
                     <button class="btn form-button" type="submit">Zaktualizuj konto</button>

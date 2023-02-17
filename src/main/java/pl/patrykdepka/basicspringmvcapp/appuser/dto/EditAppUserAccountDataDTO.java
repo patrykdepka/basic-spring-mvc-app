@@ -3,11 +3,16 @@ package pl.patrykdepka.basicspringmvcapp.appuser.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Setter
 public class EditAppUserAccountDataDTO {
+    @NotNull(message = "{form.field.someField.error.notNull.message}")
     private boolean enabled;
+    @NotNull(message = "{form.field.someField.error.notNull.message}")
     private boolean accountNonLocked;
+    @NotNull(message = "{form.field.someField.error.notNull.message}")
     private Long roleId;
 
     public static class EditAppUserAccountDataDTOBuilder {
