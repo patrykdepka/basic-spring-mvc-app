@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pl"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel administratora</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <link href="../static/styles/main.css" th:href="@{/styles/main.css}" rel="stylesheet"/>
+</head>
+<body>
+<nav th:replace="fragments :: navbar"></nav>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a class="side-nav-link active"
+                       href="#" th:href="@{'/admin-panel/users/' + ${userId} + '/settings/account'}">Konto</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-9">
+            <form id="userAccountEditFormAdminPanel" name="userAccountEditFormAdminPanel" class="custom-form" method="post" th:method="patch" action="#" th:action="@{'/admin-panel/users/' + ${userId} + '/settings/account'}" th:object="${editUserAccountDataDTO}">
+                <div class="form-heading">
+                    <h2>Edycja konta użytkownika</h2>
+                    <span>Zaktualizuj konto użytkownika poniżej</span>
+                </div>
+                <div class="alert custom-alert-success" role="alert" th:if="${accountUpdated == true}" th:text="#{admin.userAccountEditFormAdminPanel.accountUpdated.message}"></div>
+                <div class="form-group">
+                    <label for="enabled" class="form-label">WŁĄCZONY</label>
+                    <select id="enabled" name="enabled" th:field="*{enabled}"
+                            class="form-control">
+                        <option th:value="'true'" th:text="'Tak'">Tak</option>
+                        <option th:value="'false'" th:text="'Nie'">Nie</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="accountNonLocked" class="form-label">ZABLOKOWANY</label>
+                    <select id="accountNonLocked" name="accountNonLocked" th:field="*{accountNonLocked}"
+                            class="form-control">
+                        <option th:value="'true'" th:text="'Nie'">Nie</option>
+                        <option th:value="'false'" th:text="'Tak'">Tak</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="roles" class="form-label">ROLA</label>
+                    <select id="roles" name="roles" th:field="*{roleId}"
+                            class="form-control">
+                        <option th:each="userRole: ${userRoles}" th:value="${userRole.id}" th:text="${userRole.displayName}">Użytkownik</option>
+                    </select>
+                </div>
+                <div class="d-grid gap-2 col-5 mx-auto" style="margin: 8px 0 8px 0;">
+                    <button class="btn form-button" type="submit">Zaktualizuj konto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="fragments :: scripts"></th:block>
+</body>
+</html>

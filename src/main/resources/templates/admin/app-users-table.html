@@ -54,6 +54,7 @@
                 <th scope="col">Włączony</th>
                 <th scope="col">Zablokowany</th>
                 <th scope="col">Rola</th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
@@ -67,10 +68,14 @@
                 <td>
                     <p th:each="role: ${user.roles}" th:text="${role.displayName}">Użytkownik</p>
                 </td>
+                <td>
+                    <a href="#" th:href="@{'/admin-panel/users/' + ${user.id} + '/settings/account'}"><i class="fa-solid fa-pen icon-button"></i></a>
+                </td>
             </tr>
             <th:block th:if="${users.getNumberOfElements() < 10}" th:each="i, status: ${#numbers.sequence((1 + (users.getNumber() * 10) + users.getNumberOfElements()), (users.getNumber() + 1) * 10)}">
                 <tr style="height: 65px;">
                     <td th:text="${i}">1</td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>

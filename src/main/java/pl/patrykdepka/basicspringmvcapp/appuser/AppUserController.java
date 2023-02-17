@@ -8,12 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserRegistrationDTO;
 import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserTableAPDTO;
+import pl.patrykdepka.basicspringmvcapp.appuser.dto.EditAppUserAccountDataDTO;
+import pl.patrykdepka.basicspringmvcapp.appuserrole.AppUserRoleService;
 
 import javax.validation.Valid;
 import java.util.Locale;
@@ -21,10 +20,12 @@ import java.util.Locale;
 @Controller
 public class AppUserController {
     private final IAppUserService iAppUserService;
+    private final AppUserRoleService appUserRoleService;
     private final MessageSource messageSource;
 
-    public AppUserController(IAppUserService iAppUserService, MessageSource messageSource) {
+    public AppUserController(IAppUserService iAppUserService, AppUserRoleService appUserRoleService, MessageSource messageSource) {
         this.iAppUserService = iAppUserService;
+        this.appUserRoleService = appUserRoleService;
         this.messageSource = messageSource;
     }
 
@@ -143,5 +144,25 @@ public class AppUserController {
         } else {
             return "redirect:/admin-panel/users/results?search_query=";
         }
+    }
+
+    @GetMapping("/admin-panel/users/{id}/settings/account")
+    public String showUserAccountEditForm(@PathVariable Long id, Model model) {
+        model.addAttribute("accountUpdated", false);
+        model.addAttribute("userId", id);
+        model.addAttribute("editUserAccountDataDTO", iAppUserService.findUserAccountDataToEdit(id));
+        model.addAttribute("userRoles", appUserRoleService.findAllUserRoles());
+        return "admin/forms/app-user-account-edit-form";
+    }
+
+    @PatchMapping("/admin-panel/users/{id}/settings/account")
+    public String updateUserAccount(@PathVariable Long id,
+                                    @ModelAttribute(name = "editUserAccountDataDTO") EditAppUserAccountDataDTO editUserAccountDataDTO,
+                                    Model model) {
+        model.addAttribute("userId", id);
+        model.addAttribute("editUserAccountDataDTO", iAppUserService.updateUserAccountData(id, editUserAccountDataDTO));
+        model.addAttribute("accountUpdated", true);
+        model.addAttribute("userRoles", appUserRoleService.findAllUserRoles());
+        return "admin/forms/app-user-account-edit-form";
     }
 }

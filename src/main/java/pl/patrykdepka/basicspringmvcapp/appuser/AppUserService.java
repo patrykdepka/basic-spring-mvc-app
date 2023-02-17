@@ -7,11 +7,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserRegistrationDTO;
 import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserTableAPDTO;
+import pl.patrykdepka.basicspringmvcapp.appuser.dto.EditAppUserAccountDataDTO;
 import pl.patrykdepka.basicspringmvcapp.appuser.mapper.AppUserTableAPDTOMapper;
+import pl.patrykdepka.basicspringmvcapp.appuser.mapper.EditAppUserAccountDataDTOMapper;
 import pl.patrykdepka.basicspringmvcapp.appuserrole.AppUserRole;
 import pl.patrykdepka.basicspringmvcapp.appuserrole.AppUserRoleRepository;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class AppUserService implements IAppUserService {
@@ -67,5 +70,43 @@ public class AppUserService implements IAppUserService {
         }
 
         return Page.empty();
+    }
+
+    public EditAppUserAccountDataDTO findUserAccountDataToEdit(Long id) {
+        return appUserRepository
+                .findById(id)
+                .map(EditAppUserAccountDataDTOMapper::mapToEditAppUserAccountDataDTO)
+                .orElseThrow(() -> new AppUserNotFoundException("User with ID " + id + " not found"));
+    }
+
+    @Transactional
+    public EditAppUserAccountDataDTO updateUserAccountData(Long id, EditAppUserAccountDataDTO userAccountEditAP) {
+        return appUserRepository
+                .findById(id)
+                .map(target -> setUserAccountFields(userAccountEditAP, target))
+                .map(EditAppUserAccountDataDTOMapper::mapToEditAppUserAccountDataDTO)
+                .orElseThrow(() -> new AppUserNotFoundException("User with ID " + id + " not found"));
+    }
+
+    private AppUser setUserAccountFields(EditAppUserAccountDataDTO source, AppUser target) {
+        if (source.isEnabled() != target.isEnabled()) {
+            target.setEnabled(source.isEnabled());
+        }
+        if (source.isAccountNonLocked() != target.isAccountNonLocked()) {
+            target.setAccountNonLocked(source.isAccountNonLocked());
+        }
+        for (AppUserRole appUserRole : target.getRoles()) {
+            if (source.getRoleId() != appUserRole.getId()) {
+                Optional<AppUserRole> userRoleOpt = appUserRoleRepository.findById(source.getRoleId());
+                userRoleOpt.ifPresentOrElse(
+                        userRole -> target.setRoles(Set.of(userRole)),
+                        () -> {
+                            throw new NoSuchRoleException(String.format("Role with name %s not found", USER_ROLE));
+                        }
+                );
+            }
+        }
+
+        return target;
     }
 }
