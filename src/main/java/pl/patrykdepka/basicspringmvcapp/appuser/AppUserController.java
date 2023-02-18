@@ -19,12 +19,12 @@ import java.util.Locale;
 
 @Controller
 public class AppUserController {
-    private final IAppUserService iAppUserService;
+    private final AppUserService appUserService;
     private final AppUserRoleService appUserRoleService;
     private final MessageSource messageSource;
 
-    public AppUserController(IAppUserService iAppUserService, AppUserRoleService appUserRoleService, MessageSource messageSource) {
-        this.iAppUserService = iAppUserService;
+    public AppUserController(AppUserService appUserService, AppUserRoleService appUserRoleService, MessageSource messageSource) {
+        this.appUserService = appUserService;
         this.appUserRoleService = appUserRoleService;
         this.messageSource = messageSource;
     }
@@ -43,13 +43,13 @@ public class AppUserController {
     @PostMapping("/register")
     public String register(@Valid @ModelAttribute("userRegistrationDTO") AppUserRegistrationDTO userRegistrationDTO,
                            BindingResult bindingResult) {
-        if (iAppUserService.checkIfUserExists(userRegistrationDTO.getEmail())) {
+        if (appUserService.checkIfUserExists(userRegistrationDTO.getEmail())) {
             bindingResult.addError(new FieldError("userRegistrationDTO", "email", messageSource.getMessage("form.field.email.error.emailIsInUse.message", null, Locale.getDefault())));
         }
         if (bindingResult.hasErrors()) {
             return "forms/registration-form";
         } else {
-            iAppUserService.createUser(userRegistrationDTO);
+            appUserService.createUser(userRegistrationDTO);
             return "redirect:/confirmation";
         }
     }
@@ -70,7 +70,7 @@ public class AppUserController {
 
         if (page > 0) {
             PageRequest pageRequest = PageRequest.of(page - 1, 10, Sort.by(Sort.Direction.fromString(direction), property));
-            Page<AppUserTableAPDTO> users = iAppUserService.findAllUsers(pageRequest);
+            Page<AppUserTableAPDTO> users = appUserService.findAllUsers(pageRequest);
 
             if (page <= users.getTotalPages()) {
                 model.addAttribute("users", users);
@@ -108,7 +108,7 @@ public class AppUserController {
 
             if (page > 0) {
                 PageRequest pageRequest = PageRequest.of(page - 1, 10, Sort.by(Sort.Direction.fromString(direction), property));
-                Page<AppUserTableAPDTO> users = iAppUserService.findUsersBySearch(searchQuery, pageRequest);
+                Page<AppUserTableAPDTO> users = appUserService.findUsersBySearch(searchQuery, pageRequest);
 
                 if (users.getNumberOfElements() == 0) {
                     model.addAttribute("users", users);
@@ -150,7 +150,7 @@ public class AppUserController {
     public String showUserAccountEditForm(@PathVariable Long id, Model model) {
         model.addAttribute("accountUpdated", false);
         model.addAttribute("userId", id);
-        model.addAttribute("editUserAccountDataDTO", iAppUserService.findUserAccountDataToEdit(id));
+        model.addAttribute("editUserAccountDataDTO", appUserService.findUserAccountDataToEdit(id));
         model.addAttribute("userRoles", appUserRoleService.findAllUserRoles());
         return "admin/forms/app-user-account-edit-form";
     }
@@ -166,7 +166,7 @@ public class AppUserController {
             model.addAttribute("userRoles", appUserRoleService.findAllUserRoles());
         } else {
             model.addAttribute("userId", id);
-            model.addAttribute("editUserAccountDataDTO", iAppUserService.updateUserAccountData(id, editUserAccountDataDTO));
+            model.addAttribute("editUserAccountDataDTO", appUserService.updateUserAccountData(id, editUserAccountDataDTO));
             model.addAttribute("accountUpdated", true);
             model.addAttribute("userRoles", appUserRoleService.findAllUserRoles());
         }
