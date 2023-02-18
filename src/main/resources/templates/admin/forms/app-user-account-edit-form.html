@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <link href="../static/styles/main.css" th:href="@{/styles/main.css}" rel="stylesheet"/>
 </head>
-<body>
+<body onload="setValueInRoleSelectionControl();">
 <nav th:replace="fragments :: navbar"></nav>
 <div class="container">
     <div class="row">
@@ -61,5 +61,18 @@
 </div>
 
 <th:block th:replace="fragments :: scripts"></th:block>
+<script th:inline="javascript">
+    function setValueInRoleSelectionControl() {
+        const editUserAccountDataDTO = JSON.parse('[[${editUserAccountDataDTO}]]');
+        const currentUserRole = Number.parseInt(editUserAccountDataDTO.roleId);
+
+        const select = document.getElementById('roles');
+        for (let i = 0; i < select.options.length; i++) {
+            if (select.options[i].value == currentUserRole) {
+                select.value = currentUserRole;
+            }
+        }
+    }
+</script>
 </body>
 </html>
