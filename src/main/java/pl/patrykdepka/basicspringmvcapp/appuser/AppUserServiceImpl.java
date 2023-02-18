@@ -12,6 +12,7 @@ import pl.patrykdepka.basicspringmvcapp.appuser.mapper.AppUserTableAPDTOMapper;
 import pl.patrykdepka.basicspringmvcapp.appuser.mapper.EditAppUserAccountDataDTOMapper;
 import pl.patrykdepka.basicspringmvcapp.appuserrole.AppUserRole;
 import pl.patrykdepka.basicspringmvcapp.appuserrole.AppUserRoleRepository;
+import pl.patrykdepka.basicspringmvcapp.profileimage.ProfileImageService;
 
 import java.util.Optional;
 import java.util.Set;
@@ -21,11 +22,17 @@ public class AppUserServiceImpl implements AppUserService {
     private static final String USER_ROLE = "USER";
     private final AppUserRepository appUserRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ProfileImageService profileImageService;
     private final AppUserRoleRepository appUserRoleRepository;
 
-    public AppUserServiceImpl(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder, AppUserRoleRepository appUserRoleRepository) {
+    public AppUserServiceImpl(AppUserRepository appUserRepository,
+                              PasswordEncoder passwordEncoder,
+                              ProfileImageService profileImageService,
+                              AppUserRoleRepository appUserRoleRepository
+    ) {
         this.appUserRepository = appUserRepository;
         this.passwordEncoder = passwordEncoder;
+        this.profileImageService = profileImageService;
         this.appUserRoleRepository = appUserRoleRepository;
     }
 
@@ -40,6 +47,7 @@ public class AppUserServiceImpl implements AppUserService {
         user.setLastName(userRegistration.getLastName());
         user.setEmail(userRegistration.getEmail().toLowerCase());
         user.setPassword(passwordEncoder.encode(userRegistration.getPassword()));
+        user.setProfileImage(profileImageService.createDefaultProfileImage());
         user.setEnabled(true);
         user.setAccountNonLocked(true);
         Optional<AppUserRole> userRole = appUserRoleRepository.findRoleByName(USER_ROLE);

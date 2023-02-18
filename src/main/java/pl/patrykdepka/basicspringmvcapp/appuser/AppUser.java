@@ -3,6 +3,7 @@ package pl.patrykdepka.basicspringmvcapp.appuser;
 import lombok.Getter;
 import lombok.Setter;
 import pl.patrykdepka.basicspringmvcapp.appuserrole.AppUserRole;
+import pl.patrykdepka.basicspringmvcapp.profileimage.ProfileImage;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -19,6 +20,13 @@ public class AppUser {
     private String lastName;
     private String email;
     private String password;
+    @OneToOne
+    @JoinTable(
+            name = "user_profile_image",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "profile_image_id", referencedColumnName = "id")
+    )
+    private ProfileImage profileImage;
     private boolean enabled;
     private boolean accountNonLocked;
     @ManyToMany(fetch = FetchType.EAGER)

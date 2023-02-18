@@ -8,6 +8,7 @@ import pl.patrykdepka.basicspringmvcapp.appuser.AppUser;
 import pl.patrykdepka.basicspringmvcapp.appuser.AppUserRepository;
 import pl.patrykdepka.basicspringmvcapp.appuserrole.AppUserRole;
 
+import java.util.Base64;
 import java.util.Set;
 
 @Component
@@ -31,6 +32,8 @@ public class AppUserDetailsService implements UserDetailsService {
                 .withLastName(user.getLastName())
                 .withUsername(user.getEmail())
                 .withPassword(user.getPassword())
+                .withProfileImageType(user.getProfileImage().getFileType())
+                .withProfileImageData(Base64.getEncoder().encodeToString(user.getProfileImage().getFileData()))
                 .withEnabled(user.isEnabled())
                 .withAccountNonLocked(user.isAccountNonLocked())
                 .withRoles(getUserRolesArray(user.getRoles()))

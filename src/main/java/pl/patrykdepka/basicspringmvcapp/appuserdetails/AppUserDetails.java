@@ -12,6 +12,8 @@ import java.util.List;
 public class AppUserDetails extends User {
     private String firstName;
     private String lastName;
+    private String profileImageType;
+    private String profileImageData;
 
     public AppUserDetails(AppUserDetailsBuilder appUserDetailsBuilder) {
         super(
@@ -25,6 +27,8 @@ public class AppUserDetails extends User {
         );
         this.firstName = appUserDetailsBuilder.firstName;
         this.lastName = appUserDetailsBuilder.lastName;
+        this.profileImageType = appUserDetailsBuilder.profileImageType;
+        this.profileImageData = appUserDetailsBuilder.profileImageData;
     }
 
     public String getFirstName() {
@@ -43,11 +47,29 @@ public class AppUserDetails extends User {
         this.lastName = lastName;
     }
 
+    public String getProfileImageType() {
+        return profileImageType;
+    }
+
+    public void setProfileImageType(String profileImageType) {
+        this.profileImageType = profileImageType;
+    }
+
+    public String getProfileImageData() {
+        return profileImageData;
+    }
+
+    public void setProfileImageData(String profileImageData) {
+        this.profileImageData = profileImageData;
+    }
+
     public static final class AppUserDetailsBuilder {
         private String firstName;
         private String lastName;
         private String username;
         private String password;
+        private String profileImageType;
+        private String profileImageData;
         private boolean enabled;
         private boolean accountNonLocked;
         private List<GrantedAuthority> authorities;
@@ -69,6 +91,16 @@ public class AppUserDetails extends User {
 
         public AppUserDetailsBuilder withPassword(String password) {
             this.password = password;
+            return this;
+        }
+
+        public AppUserDetailsBuilder withProfileImageType(String profileImageType) {
+            this.profileImageType = profileImageType;
+            return this;
+        }
+
+        public AppUserDetailsBuilder withProfileImageData(String profileImageData) {
+            this.profileImageData = profileImageData;
             return this;
         }
 
