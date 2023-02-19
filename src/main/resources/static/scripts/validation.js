@@ -31,6 +31,15 @@ function validateUserProfileEditFormAdminPanel() {
     return isNotFirstNameError && isNotLastNameError;
 }
 
+function validateUserProfileEditForm() {
+    const firstNameValue = document.userProfileEditForm.firstName.value;
+    const isNotFirstNameError = checkIfNotEmpty('firstName', firstNameValue);
+    const lastNameValue = document.userProfileEditForm.lastName.value;
+    const isNotLastNameError = checkIfNotEmpty('lastName', lastNameValue);
+
+    return isNotFirstNameError && isNotLastNameError;
+}
+
 function checkIfNotEmpty(fieldName, fieldValue) {
     if (!fieldValue) {
         document.getElementById(`${fieldName}`).className='form-control is-invalid';
