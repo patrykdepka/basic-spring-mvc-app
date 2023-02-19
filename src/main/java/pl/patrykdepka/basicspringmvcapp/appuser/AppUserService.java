@@ -2,10 +2,7 @@ package pl.patrykdepka.basicspringmvcapp.appuser;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserProfileDTO;
-import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserRegistrationDTO;
-import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserTableAPDTO;
-import pl.patrykdepka.basicspringmvcapp.appuser.dto.EditAppUserAccountDataDTO;
+import pl.patrykdepka.basicspringmvcapp.appuser.dto.*;
 
 public interface AppUserService {
 
@@ -22,4 +19,8 @@ public interface AppUserService {
     EditAppUserAccountDataDTO findUserAccountDataToEdit(Long id);
 
     EditAppUserAccountDataDTO updateUserAccountData(Long id, EditAppUserAccountDataDTO userAccountEditAP);
+
+    EditAppUserProfileDTO findUserProfileToEdit(Long id);
+
+    EditAppUserProfileDTO updateUserProfile(Long id, EditAppUserProfileDTO editUserProfileDTO);
 }

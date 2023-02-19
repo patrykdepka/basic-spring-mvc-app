@@ -5,15 +5,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserProfileDTO;
-import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserRegistrationDTO;
-import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserTableAPDTO;
-import pl.patrykdepka.basicspringmvcapp.appuser.dto.EditAppUserAccountDataDTO;
+import pl.patrykdepka.basicspringmvcapp.appuser.dto.*;
 import pl.patrykdepka.basicspringmvcapp.appuser.mapper.AppUserProfileDTOMapper;
 import pl.patrykdepka.basicspringmvcapp.appuser.mapper.AppUserTableAPDTOMapper;
 import pl.patrykdepka.basicspringmvcapp.appuser.mapper.EditAppUserAccountDataDTOMapper;
+import pl.patrykdepka.basicspringmvcapp.appuser.mapper.EditAppUserProfileDTOMapper;
+import pl.patrykdepka.basicspringmvcapp.appuserdetails.AppUserDetailsService;
 import pl.patrykdepka.basicspringmvcapp.appuserrole.AppUserRole;
 import pl.patrykdepka.basicspringmvcapp.appuserrole.AppUserRoleRepository;
+import pl.patrykdepka.basicspringmvcapp.profileimage.ProfileImage;
 import pl.patrykdepka.basicspringmvcapp.profileimage.ProfileImageService;
 
 import java.util.Optional;
@@ -26,16 +26,19 @@ public class AppUserServiceImpl implements AppUserService {
     private final PasswordEncoder passwordEncoder;
     private final ProfileImageService profileImageService;
     private final AppUserRoleRepository appUserRoleRepository;
+    private final AppUserDetailsService appUserDetailsService;
 
     public AppUserServiceImpl(AppUserRepository appUserRepository,
                               PasswordEncoder passwordEncoder,
                               ProfileImageService profileImageService,
-                              AppUserRoleRepository appUserRoleRepository
+                              AppUserRoleRepository appUserRoleRepository,
+                              AppUserDetailsService appUserDetailsService
     ) {
         this.appUserRepository = appUserRepository;
         this.passwordEncoder = passwordEncoder;
         this.profileImageService = profileImageService;
         this.appUserRoleRepository = appUserRoleRepository;
+        this.appUserDetailsService = appUserDetailsService;
     }
 
     public boolean checkIfUserExists(String email) {
@@ -100,6 +103,54 @@ public class AppUserServiceImpl implements AppUserService {
                 .map(target -> setUserAccountFields(userAccountEditAP, target))
                 .map(EditAppUserAccountDataDTOMapper::mapToEditAppUserAccountDataDTO)
                 .orElseThrow(() -> new AppUserNotFoundException("User with ID " + id + " not found"));
+    }
+
+    public EditAppUserProfileDTO findUserProfileToEdit(Long id) {
+        return appUserRepository
+                .findById(id)
+                .map(EditAppUserProfileDTOMapper::mapToEditAppUserProfileDTO)
+                .orElseThrow(() -> new AppUserNotFoundException("User with ID " + id + " not found"));
+    }
+
+    @Transactional
+    public EditAppUserProfileDTO updateUserProfile(Long id, EditAppUserProfileDTO editUserProfileDTO) {
+        return appUserRepository
+                .findById(id)
+                .map(target -> setUserProfileFields(editUserProfileDTO, target, true))
+                .map(EditAppUserProfileDTOMapper::mapToEditAppUserProfileDTO)
+                .orElseThrow(() -> new AppUserNotFoundException("User with ID " + id + " not found"));
+    }
+
+    private AppUser setUserProfileFields(EditAppUserProfileDTO source, AppUser target, boolean isEditByAdmin) {
+        boolean isAppUserDetailsEdited = false;
+
+        if (source.getFirstName() != null && !source.getFirstName().equals(target.getFirstName())) {
+            target.setFirstName(source.getFirstName());
+            isAppUserDetailsEdited = true;
+        }
+        if (source.getLastName() != null && !source.getLastName().equals(target.getLastName())) {
+            target.setLastName(source.getLastName());
+            isAppUserDetailsEdited = true;
+        }
+        if (source.getProfileImage() != null && !source.getProfileImage().isEmpty()) {
+            Optional<ProfileImage> profileImage = profileImageService.updateProfileImage(target, source.getProfileImage());
+            if (profileImage.isPresent()) {
+                target.setProfileImage(profileImage.get());
+                isAppUserDetailsEdited = true;
+            }
+        }
+        if (source.getBio() != null && !source.getBio().equals(target.getBio())) {
+            target.setBio(source.getBio());
+        }
+        if (source.getCity() != null && !source.getCity().equals(target.getCity())) {
+            target.setCity(source.getCity());
+        }
+
+        if (isAppUserDetailsEdited && !isEditByAdmin) {
+            appUserDetailsService.updateAppUserDetails(target);
+        }
+
+        return target;
     }
 
     private AppUser setUserAccountFields(EditAppUserAccountDataDTO source, AppUser target) {

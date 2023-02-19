@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserRegistrationDTO;
 import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserTableAPDTO;
 import pl.patrykdepka.basicspringmvcapp.appuser.dto.EditAppUserAccountDataDTO;
+import pl.patrykdepka.basicspringmvcapp.appuser.dto.EditAppUserProfileDTO;
 import pl.patrykdepka.basicspringmvcapp.appuserrole.AppUserRoleService;
 import pl.patrykdepka.basicspringmvcapp.core.CurrentUserFacade;
 
@@ -184,5 +185,23 @@ public class AppUserController {
             model.addAttribute("userRoles", appUserRoleService.findAllUserRoles());
         }
         return "admin/forms/app-user-account-edit-form";
+    }
+
+    @GetMapping("/admin-panel/users/{id}/settings/profile")
+    public String showUserProfileEditForm(@PathVariable Long id, Model model) {
+        model.addAttribute("profileUpdated", false);
+        model.addAttribute("userId", id);
+        model.addAttribute("editUserProfileDTO", appUserService.findUserProfileToEdit(id));
+        return "admin/forms/app-user-profile-edit-form";
+    }
+
+    @PatchMapping("/admin-panel/users/{id}/settings/profile")
+    public String updateUserProfile(@PathVariable Long id,
+                                    @ModelAttribute(name = "editUserProfileDTO") EditAppUserProfileDTO editUserProfileDTO,
+                                    Model model) {
+        model.addAttribute("userId", id);
+        model.addAttribute("editUserProfileDTO", appUserService.updateUserProfile(id, editUserProfileDTO));
+        model.addAttribute("profileUpdated", true);
+        return "admin/forms/app-user-profile-edit-form";
     }
 }

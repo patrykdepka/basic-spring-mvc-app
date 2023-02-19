@@ -2,9 +2,12 @@ package pl.patrykdepka.basicspringmvcapp.profileimage;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import pl.patrykdepka.basicspringmvcapp.appuser.AppUser;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 @Service
 public class ProfileImageServiceImpl implements ProfileImageService {
@@ -24,6 +27,21 @@ public class ProfileImageServiceImpl implements ProfileImageService {
             return profileImageRepository.save(profileImage);
         } catch (IOException e) {
             throw new DefaultProfileImageNotFoundException("File " + resource.getPath() + " not found");
+        }
+    }
+
+    public Optional<ProfileImage> updateProfileImage(AppUser user, MultipartFile newProfileImage) {
+        ProfileImage currentProfileImage = user.getProfileImage();
+        try (InputStream is = newProfileImage.getInputStream()) {
+            if (currentProfileImage.getFileData() != is.readAllBytes()) {
+                currentProfileImage.setFileName(newProfileImage.getOriginalFilename());
+                currentProfileImage.setFileType(newProfileImage.getContentType());
+                currentProfileImage.setFileData(newProfileImage.getBytes());
+                return Optional.of(currentProfileImage);
+            }
+            return Optional.empty();
+        } catch (IOException e) {
+            throw new DefaultProfileImageNotFoundException("File not found");
         }
     }
 }

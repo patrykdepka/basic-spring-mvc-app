@@ -1,5 +1,8 @@
 package pl.patrykdepka.basicspringmvcapp.appuserdetails;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -45,5 +48,11 @@ public class AppUserDetailsService implements UserDetailsService {
                 .stream()
                 .map(AppUserRole::getName)
                 .toArray(String[]::new);
+    }
+
+    public void updateAppUserDetails(AppUser user) {
+        Authentication currentUser = SecurityContextHolder.getContext().getAuthentication();
+        Authentication newAuthenticationToken = new UsernamePasswordAuthenticationToken(createAppUserDetails(user), currentUser.getCredentials(), currentUser.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(newAuthenticationToken);
     }
 }
