@@ -197,11 +197,17 @@ public class AppUserController {
 
     @PatchMapping("/admin-panel/users/{id}/settings/profile")
     public String updateUserProfile(@PathVariable Long id,
-                                    @ModelAttribute(name = "editUserProfileDTO") EditAppUserProfileDTO editUserProfileDTO,
+                                    @Valid @ModelAttribute(name = "editUserProfileDTO") EditAppUserProfileDTO editUserProfileDTO,
+                                    BindingResult bindingResult,
                                     Model model) {
-        model.addAttribute("userId", id);
-        model.addAttribute("editUserProfileDTO", appUserService.updateUserProfile(id, editUserProfileDTO));
-        model.addAttribute("profileUpdated", true);
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("profileUpdated", false);
+            model.addAttribute("userId", id);
+        } else {
+            model.addAttribute("userId", id);
+            model.addAttribute("editUserProfileDTO", appUserService.updateUserProfile(id, editUserProfileDTO));
+            model.addAttribute("profileUpdated", true);
+        }
         return "admin/forms/app-user-profile-edit-form";
     }
 }

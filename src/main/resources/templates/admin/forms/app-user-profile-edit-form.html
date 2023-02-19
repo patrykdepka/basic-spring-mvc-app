@@ -34,19 +34,21 @@
                     <label for="firstName" class="form-label">IMIĘ</label>
                     <input type="text"
                            id="firstName" name="firstName"
-                           class="form-control"
+                           class="form-control" th:class="${#fields.hasErrors('firstName')} == FALSE ? 'form-control' : 'form-control is-invalid'"
                            placeholder="Imię"
                            th:field="*{firstName}"
                            required>
+                    <div class="error-message" th:errors="*{firstName}">Błędy związane z imieniem</div>
                 </div>
                 <div class="form-group">
                     <label for="lastName" class="form-label">NAZWISKO</label>
                     <input type="text"
                            id="lastName" name="lastName"
-                           class="form-control"
+                           class="form-control" th:class="${#fields.hasErrors('lastName')} == FALSE ? 'form-control' : 'form-control is-invalid'"
                            placeholder="Nazwisko"
                            th:field="*{lastName}"
                            required>
+                    <div class="error-message" th:errors="*{lastName}">Błędy związane z nazwiskiem</div>
                 </div>
                 <div class="form-group">
                     <label for="profileImage" class="form-label">ZDJĘCIE PROFILOWE</label>
@@ -55,24 +57,27 @@
                     </div>
                     <input type="file"
                            id="profileImage" name="profileImage"
-                           class="form-control-file"
+                           class="form-control-file" th:class="${#fields.hasErrors('profileImage')} == FALSE ? 'form-control-file' : 'form-control-file is-invalid'"
                            th:field="*{profileImage}">
+                    <div class="error-message" th:errors="*{profileImage}">Błędy związane ze zdjęciem profilowym</div>
                 </div>
                 <div class="form-group">
                     <label for="bio" class="form-label">BIOGRAM</label>
                     <textarea id="bio" name="bio"
-                              class="form-control"
+                              class="form-control" th:class="${#fields.hasErrors('bio')} == FALSE ? 'form-control' : 'form-control is-invalid'"
                               placeholder="Biogram"
                               th:field="*{bio}">
                     </textarea>
+                    <div class="error-message" th:errors="*{bio}">Błędy związane z biogramem</div>
                 </div>
                 <div class="form-group">
                     <label for="city" class="form-label">Miasto</label>
                     <input type="text"
                            id="city" name="city"
-                           class="form-control"
+                           class="form-control" th:class="${#fields.hasErrors('city')} == FALSE ? 'form-control' : 'form-control is-invalid'"
                            placeholder="Miasto"
                            th:field="*{city}">
+                    <div class="error-message" th:errors="*{city}">Błędy związane z miastem</div>
                 </div>
                 <div class="d-grid gap-2 col-5 mx-auto" style="margin: 8px 0 8px 0;">
                     <button class="btn form-button" type="submit">Zaktualizuj profil</button>
