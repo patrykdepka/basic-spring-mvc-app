@@ -42,7 +42,7 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     public boolean checkIfUserExists(String email) {
-        return appUserRepository.findByEmail(email).isPresent();
+        return appUserRepository.findByEmail(email.toLowerCase()).isPresent();
     }
 
     @Transactional
