@@ -5,9 +5,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserProfileDTO;
 import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserRegistrationDTO;
 import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserTableAPDTO;
 import pl.patrykdepka.basicspringmvcapp.appuser.dto.EditAppUserAccountDataDTO;
+import pl.patrykdepka.basicspringmvcapp.appuser.mapper.AppUserProfileDTOMapper;
 import pl.patrykdepka.basicspringmvcapp.appuser.mapper.AppUserTableAPDTOMapper;
 import pl.patrykdepka.basicspringmvcapp.appuser.mapper.EditAppUserAccountDataDTOMapper;
 import pl.patrykdepka.basicspringmvcapp.appuserrole.AppUserRole;
@@ -58,6 +60,10 @@ public class AppUserServiceImpl implements AppUserService {
                 }
         );
         appUserRepository.save(user);
+    }
+
+    public AppUserProfileDTO findUserProfile(AppUser user) {
+        return AppUserProfileDTOMapper.mapToAppUserProfileDTO(user);
     }
 
     public Page<AppUserTableAPDTO> findAllUsers(Pageable pageable) {

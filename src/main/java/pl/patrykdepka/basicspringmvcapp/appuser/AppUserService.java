@@ -2,6 +2,7 @@ package pl.patrykdepka.basicspringmvcapp.appuser;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserProfileDTO;
 import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserRegistrationDTO;
 import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserTableAPDTO;
 import pl.patrykdepka.basicspringmvcapp.appuser.dto.EditAppUserAccountDataDTO;
@@ -11,6 +12,8 @@ public interface AppUserService {
     boolean checkIfUserExists(String email);
 
     void createUser(AppUserRegistrationDTO userRegistration);
+
+    AppUserProfileDTO findUserProfile(AppUser user);
 
     Page<AppUserTableAPDTO> findAllUsers(Pageable pageable);
 

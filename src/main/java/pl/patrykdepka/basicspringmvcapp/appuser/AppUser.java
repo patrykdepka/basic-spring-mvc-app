@@ -27,6 +27,8 @@ public class AppUser {
             inverseJoinColumns = @JoinColumn(name = "profile_image_id", referencedColumnName = "id")
     )
     private ProfileImage profileImage;
+    private String bio;
+    private String city;
     private boolean enabled;
     private boolean accountNonLocked;
     @ManyToMany(fetch = FetchType.EAGER)

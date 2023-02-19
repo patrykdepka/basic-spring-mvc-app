@@ -13,6 +13,7 @@ import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserRegistrationDTO;
 import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserTableAPDTO;
 import pl.patrykdepka.basicspringmvcapp.appuser.dto.EditAppUserAccountDataDTO;
 import pl.patrykdepka.basicspringmvcapp.appuserrole.AppUserRoleService;
+import pl.patrykdepka.basicspringmvcapp.core.CurrentUserFacade;
 
 import javax.validation.Valid;
 import java.util.Locale;
@@ -22,11 +23,17 @@ public class AppUserController {
     private final AppUserService appUserService;
     private final AppUserRoleService appUserRoleService;
     private final MessageSource messageSource;
+    private final CurrentUserFacade currentUserFacade;
 
-    public AppUserController(AppUserService appUserService, AppUserRoleService appUserRoleService, MessageSource messageSource) {
+    public AppUserController(AppUserService appUserService,
+                             AppUserRoleService appUserRoleService,
+                             MessageSource messageSource,
+                             CurrentUserFacade currentUserFacade
+    ) {
         this.appUserService = appUserService;
         this.appUserRoleService = appUserRoleService;
         this.messageSource = messageSource;
+        this.currentUserFacade = currentUserFacade;
     }
 
     @GetMapping("/login")
@@ -57,6 +64,12 @@ public class AppUserController {
     @GetMapping("/confirmation")
     public String registrationConfirmation() {
         return "registration-confirmation";
+    }
+
+    @GetMapping("/profile")
+    public String getUserProfile(Model model) {
+        model.addAttribute("userProfile", appUserService.findUserProfile(currentUserFacade.getCurrentUser()));
+        return "app-user-profile";
     }
 
     @GetMapping("/admin-panel/users")
