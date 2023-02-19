@@ -69,6 +69,15 @@ public class AppUserServiceImpl implements AppUserService {
         return AppUserProfileDTOMapper.mapToAppUserProfileDTO(user);
     }
 
+    public EditAppUserProfileDTO findUserProfileToEdit(AppUser user) {
+        return EditAppUserProfileDTOMapper.mapToEditAppUserProfileDTO(user);
+    }
+
+    @Transactional
+    public EditAppUserProfileDTO updateUserProfile(AppUser user, EditAppUserProfileDTO editUserProfile) {
+        return EditAppUserProfileDTOMapper.mapToEditAppUserProfileDTO(setUserProfileFields(editUserProfile, user, false));
+    }
+
     public Page<AppUserTableAPDTO> findAllUsers(Pageable pageable) {
         return AppUserTableAPDTOMapper.mapToAppUserTableAPDTOs(appUserRepository.findAllUsers(pageable));
     }

@@ -73,6 +73,26 @@ public class AppUserController {
         return "app-user-profile";
     }
 
+    @GetMapping("/settings/profile")
+    public String showUserProfileEditForm(Model model) {
+        model.addAttribute("profileUpdated", false);
+        model.addAttribute("editUserProfileDTO", appUserService.findUserProfileToEdit(currentUserFacade.getCurrentUser()));
+        return "forms/app-user-profile-edit-form";
+    }
+
+    @PatchMapping("/settings/profile")
+    public String updateUserProfile(@Valid @ModelAttribute(name = "editUserProfileDTO") EditAppUserProfileDTO editUserProfileDTO,
+                                    BindingResult bindingResult,
+                                    Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("profileUpdated", false);
+        } else {
+            model.addAttribute("editUserProfileDTO", appUserService.updateUserProfile(currentUserFacade.getCurrentUser(), editUserProfileDTO));
+            model.addAttribute("profileUpdated", true);
+        }
+        return "forms/app-user-profile-edit-form";
+    }
+
     @GetMapping("/admin-panel/users")
     public String getAllUsers(@RequestParam(name = "page", required = false) Integer pageNumber,
                               @RequestParam(name = "sort_by", required = false) String sortProperty,

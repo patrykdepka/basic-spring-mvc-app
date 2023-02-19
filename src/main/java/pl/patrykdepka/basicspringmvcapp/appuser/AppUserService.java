@@ -12,6 +12,10 @@ public interface AppUserService {
 
     AppUserProfileDTO findUserProfile(AppUser user);
 
+    EditAppUserProfileDTO findUserProfileToEdit(AppUser user);
+
+    EditAppUserProfileDTO updateUserProfile(AppUser user, EditAppUserProfileDTO editUserProfile);
+
     Page<AppUserTableAPDTO> findAllUsers(Pageable pageable);
 
     Page<AppUserTableAPDTO> findUsersBySearch(String searchQuery, Pageable pageable);
