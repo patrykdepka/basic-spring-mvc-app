@@ -40,6 +40,15 @@ function validateUserProfileEditForm() {
     return isNotFirstNameError && isNotLastNameError;
 }
 
+function validateAppUserPasswordEditFormAdminPanel() {
+    const newPasswordValue = document.appUserPasswordEditFormAdminPanel.newPassword.value;
+    const isNotNewPasswordError = checkIfNotEmpty('newPassword', newPasswordValue);
+    const confirmNewPasswordValue = document.appUserPasswordEditFormAdminPanel.confirmNewPassword.value;
+    const isNotConfirmNewPasswordError = checkIfNotEmpty('confirmNewPassword', confirmNewPasswordValue);
+
+    return isNotNewPasswordError && isNotConfirmNewPasswordError;
+}
+
 function checkIfNotEmpty(fieldName, fieldValue) {
     if (!fieldValue) {
         document.getElementById(`${fieldName}`).className='form-control is-invalid';
