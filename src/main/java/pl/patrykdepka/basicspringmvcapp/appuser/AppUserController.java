@@ -90,6 +90,33 @@ public class AppUserController {
         return "forms/app-user-profile-edit-form";
     }
 
+    @GetMapping("/settings/password")
+    public String showUserPasswordEditForm(Model model) {
+        model.addAttribute("userPasswordEditDTO", new AppUserPasswordEditDTO());
+        return "forms/app-user-password-edit-form";
+    }
+
+    @PatchMapping("/settings/password")
+    public String updateUserPassword(@Valid @ModelAttribute(name = "userPasswordEditDTO") AppUserPasswordEditDTO userPasswordEditDTO,
+                                     BindingResult bindingResult,
+                                     Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("passwordUpdated", false);
+            return "forms/app-user-password-edit-form";
+        } else {
+            try {
+                appUserService.updatePassword(currentUserFacade.getCurrentUser(), userPasswordEditDTO.getCurrentPassword(), userPasswordEditDTO.getNewPassword());
+                model.addAttribute("passwordUpdated", true);
+                model.addAttribute("userPasswordEditDTO", new AppUserPasswordEditDTO());
+                return "forms/app-user-password-edit-form";
+            } catch (InvalidCurrentPasswordException e) {
+                bindingResult.addError(new FieldError("userPasswordEditDTO", "currentPassword", messageSource.getMessage("form.field.currentPassword.error.invalidCurrentPassword.message", null, Locale.getDefault())));
+                model.addAttribute("passwordUpdated", false);
+                return "forms/app-user-password-edit-form";
+            }
+        }
+    }
+
     @GetMapping("/admin-panel/users")
     public String getAllUsers(@RequestParam(name = "page", required = false) Integer pageNumber,
                               @RequestParam(name = "sort_by", required = false) String sortProperty,

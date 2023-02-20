@@ -16,6 +16,8 @@ public interface AppUserService {
 
     EditAppUserProfileDTO updateUserProfile(AppUser user, EditAppUserProfileDTO editUserProfile);
 
+    void updatePassword(AppUser user, String currentPassword, String newPassword);
+
     Page<AppUserTableAPDTO> findAllUsers(Pageable pageable);
 
     Page<AppUserTableAPDTO> findUsersBySearch(String searchQuery, Pageable pageable);

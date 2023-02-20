@@ -84,6 +84,15 @@ public class AppUserServiceImpl implements AppUserService {
         return EditAppUserProfileDTOMapper.mapToEditAppUserProfileDTO(setUserProfileFields(editUserProfile, user, false));
     }
 
+    @Transactional
+    public void updatePassword(AppUser user, String currentPassword, String newPassword) {
+        if (!checkIfValidCurrentPassword(user, currentPassword)) {
+            throw new InvalidCurrentPasswordException();
+        }
+        log.debug(LogMessage.format("Changing password for user '%s'", user.getEmail()));
+        user.setPassword(passwordEncoder.encode(newPassword));
+    }
+
     public Page<AppUserTableAPDTO> findAllUsers(Pageable pageable) {
         return AppUserTableAPDTOMapper.mapToAppUserTableAPDTOs(appUserRepository.findAllUsers(pageable));
     }
@@ -210,5 +219,9 @@ public class AppUserServiceImpl implements AppUserService {
 
     private boolean isCurrentUserAdmin(Set<AppUserRole> roles) {
         return roles.stream().anyMatch(role -> role.getName().equals(ADMIN_ROLE));
+    }
+
+    private boolean checkIfValidCurrentPassword(AppUser user, String currentPassword) {
+        return passwordEncoder.matches(currentPassword, user.getPassword());
     }
 }
