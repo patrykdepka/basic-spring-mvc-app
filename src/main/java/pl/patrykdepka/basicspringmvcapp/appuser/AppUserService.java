@@ -27,4 +27,6 @@ public interface AppUserService {
     EditAppUserProfileDTO findUserProfileToEdit(Long id);
 
     EditAppUserProfileDTO updateUserProfile(Long id, EditAppUserProfileDTO editUserProfileDTO);
+
+    void updatePassword(AppUser user, Long id, String newPassword);
 }

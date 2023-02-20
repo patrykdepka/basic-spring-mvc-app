@@ -1,7 +1,11 @@
 package pl.patrykdepka.basicspringmvcapp.appuser;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.core.log.LogMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +25,8 @@ import java.util.Set;
 
 @Service
 public class AppUserServiceImpl implements AppUserService {
+    private final Log log = LogFactory.getLog(this.getClass());
+    private static final String ADMIN_ROLE = "ADMIN";
     private static final String USER_ROLE = "USER";
     private final AppUserRepository appUserRepository;
     private final PasswordEncoder passwordEncoder;
@@ -130,6 +136,24 @@ public class AppUserServiceImpl implements AppUserService {
                 .orElseThrow(() -> new AppUserNotFoundException("User with ID " + id + " not found"));
     }
 
+    @Transactional
+    public void updatePassword(AppUser user, Long id, String newPassword) {
+        if (!isCurrentUserAdmin(user.getRoles())) {
+            throw new AccessDeniedException("Access denied");
+        }
+        appUserRepository
+                .findById(id)
+                .ifPresentOrElse(
+                        userToEdit -> {
+                            log.debug(LogMessage.format("Changing password for user '%s'", userToEdit.getEmail()));
+                            userToEdit.setPassword(passwordEncoder.encode(newPassword));
+                        },
+                        () -> {
+                            throw new AppUserNotFoundException(String.format("User with ID %s not found", id));
+                        }
+                );
+    }
+
     private AppUser setUserProfileFields(EditAppUserProfileDTO source, AppUser target, boolean isEditByAdmin) {
         boolean isAppUserDetailsEdited = false;
 
@@ -182,5 +206,9 @@ public class AppUserServiceImpl implements AppUserService {
         }
 
         return target;
+    }
+
+    private boolean isCurrentUserAdmin(Set<AppUserRole> roles) {
+        return roles.stream().anyMatch(role -> role.getName().equals(ADMIN_ROLE));
     }
 }

@@ -9,10 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserRegistrationDTO;
-import pl.patrykdepka.basicspringmvcapp.appuser.dto.AppUserTableAPDTO;
-import pl.patrykdepka.basicspringmvcapp.appuser.dto.EditAppUserAccountDataDTO;
-import pl.patrykdepka.basicspringmvcapp.appuser.dto.EditAppUserProfileDTO;
+import pl.patrykdepka.basicspringmvcapp.appuser.dto.*;
 import pl.patrykdepka.basicspringmvcapp.appuserrole.AppUserRoleService;
 import pl.patrykdepka.basicspringmvcapp.core.CurrentUserFacade;
 
@@ -229,5 +226,30 @@ public class AppUserController {
             model.addAttribute("profileUpdated", true);
         }
         return "admin/forms/app-user-profile-edit-form";
+    }
+
+    @GetMapping("/admin-panel/users/{id}/settings/password")
+    public String showUserPasswordEditForm(@PathVariable Long id, Model model) {
+        model.addAttribute("passwordUpdated", false);
+        model.addAttribute("userId", id);
+        model.addAttribute("userPasswordEditAPDTO", new AppUserPasswordEditAPDTO());
+        return "admin/forms/app-user-password-edit-form";
+    }
+
+    @PatchMapping("/admin-panel/users/{id}/settings/password")
+    public String updateUserPassword(@PathVariable Long id,
+                                     @Valid @ModelAttribute(name = "userPasswordEditAPDTO") AppUserPasswordEditAPDTO userPasswordEditAPDTO,
+                                     BindingResult bindingResult,
+                                     Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("passwordUpdated", false);
+            model.addAttribute("userId", id);
+        } else {
+            model.addAttribute("userId", id);
+            appUserService.updatePassword(currentUserFacade.getCurrentUser(), id, userPasswordEditAPDTO.getNewPassword());
+            model.addAttribute("passwordUpdated", true);
+            model.addAttribute("userPasswordEditAPDTO", new AppUserPasswordEditAPDTO());
+        }
+        return "admin/forms/app-user-password-edit-form";
     }
 }
