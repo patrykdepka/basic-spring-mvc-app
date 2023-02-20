@@ -22,19 +22,30 @@ function validateRegistrationForm() {
     return isNotFirstNameError && isNotLastNameError && isNotEmailError && isNotPasswordError && isNotConfirmPasswordError;
 }
 
-function validateUserProfileEditFormAdminPanel() {
-    const firstNameValue = document.userProfileEditFormAdminPanel.firstName.value;
+function validateUserProfileEditForm() {
+    const firstNameValue = document.userProfileEditForm.firstName.value;
     const isNotFirstNameError = checkIfNotEmpty('firstName', firstNameValue);
-    const lastNameValue = document.userProfileEditFormAdminPanel.lastName.value;
+    const lastNameValue = document.userProfileEditForm.lastName.value;
     const isNotLastNameError = checkIfNotEmpty('lastName', lastNameValue);
 
     return isNotFirstNameError && isNotLastNameError;
 }
 
-function validateUserProfileEditForm() {
-    const firstNameValue = document.userProfileEditForm.firstName.value;
+function validateUserPasswordEditForm() {
+    const currentPasswordValue = document.userPasswordEditForm.currentPassword.value;
+    const isNotCurrentPasswordError = checkIfNotEmpty('currentPassword', currentPasswordValue);
+    const newPasswordValue = document.userPasswordEditForm.newPassword.value;
+    const isNotNewPasswordError = checkIfNotEmpty('newPassword', newPasswordValue);
+    const confirmNewPasswordValue = document.userPasswordEditForm.confirmNewPassword.value;
+    const isNotConfirmNewPasswordError = checkIfNotEmpty('confirmNewPassword', confirmNewPasswordValue);
+
+    return isNotCurrentPasswordError && isNotNewPasswordError && isNotConfirmNewPasswordError;
+}
+
+function validateUserProfileEditFormAdminPanel() {
+    const firstNameValue = document.userProfileEditFormAdminPanel.firstName.value;
     const isNotFirstNameError = checkIfNotEmpty('firstName', firstNameValue);
-    const lastNameValue = document.userProfileEditForm.lastName.value;
+    const lastNameValue = document.userProfileEditFormAdminPanel.lastName.value;
     const isNotLastNameError = checkIfNotEmpty('lastName', lastNameValue);
 
     return isNotFirstNameError && isNotLastNameError;
