@@ -279,4 +279,10 @@ public class AppUserController {
         }
         return "admin/forms/app-user-password-edit-form";
     }
+
+    @DeleteMapping("/admin-panel/users/{id}")
+    public String deleteUser(@PathVariable Long id) {
+        appUserService.deleteUser(currentUserFacade.getCurrentUser(), id);
+        return "redirect:/admin-panel/users";
+    }
 }

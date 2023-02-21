@@ -163,6 +163,15 @@ public class AppUserServiceImpl implements AppUserService {
                 );
     }
 
+    public void deleteUser(AppUser user, Long id) {
+        if (!isCurrentUserAdmin(user.getRoles())) {
+            throw new AccessDeniedException("Access denied");
+        }
+        if (!user.getId().equals(id)) {
+            appUserRepository.deleteById(id);
+        }
+    }
+
     private AppUser setUserProfileFields(EditAppUserProfileDTO source, AppUser target, boolean isEditByAdmin) {
         boolean isAppUserDetailsEdited = false;
 
