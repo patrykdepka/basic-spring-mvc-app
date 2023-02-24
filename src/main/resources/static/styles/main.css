@@ -10,7 +10,7 @@
 }
 
 .form-container {
-    margin: 100px auto auto auto;
+    margin: 50px auto auto auto;
     padding: 50px 75px;
     max-width: 600px;
     border: 1px solid #f39c12;
@@ -216,6 +216,7 @@
 }
 
 .event-container {
+    margin: 50px auto auto auto;
     border: 1px solid #f39c12;
     border-radius: 0.25rem;
     box-shadow: 0 0 3px 0 #999999;

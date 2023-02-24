@@ -4,21 +4,28 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import pl.patrykdepka.basicspringmvcapp.core.CurrentUserFacade;
 import pl.patrykdepka.basicspringmvcapp.event.dto.CityDTO;
+import pl.patrykdepka.basicspringmvcapp.event.dto.CreateEventDTO;
 import pl.patrykdepka.basicspringmvcapp.event.dto.EventDTO;
+import pl.patrykdepka.basicspringmvcapp.event.enumeration.AdmissionType;
+import pl.patrykdepka.basicspringmvcapp.event.enumeration.EventType;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
 public class EventController {
     private final EventService eventService;
+    private final CurrentUserFacade currentUserFacade;
 
-    public EventController(EventService eventService) {
+    public EventController(EventService eventService, CurrentUserFacade currentUserFacade) {
         this.eventService = eventService;
+        this.currentUserFacade = currentUserFacade;
     }
 
     @GetMapping("/")
@@ -84,6 +91,34 @@ public class EventController {
         PageRequest pageRequest = PageRequest.of(page - 1, 10, Sort.by(Sort.Direction.fromString("DESC"), "dateTime"));
         model.addAttribute("events", eventService.findPastEventsByCity(city, LocalDateTime.now(), pageRequest));
         return "events";
+    }
+
+    @GetMapping("/organizer-panel/events/{id}")
+    public String getOrganizerEvent(@PathVariable Long id, Model model) {
+        model.addAttribute("event", eventService.findOrganizerEvent(currentUserFacade.getCurrentUser(), id));
+        return "event";
+    }
+
+    @GetMapping("/organizer-panel/create_event")
+    public String showCreateEventForm(Model model) {
+        model.addAttribute("createEventDTO", new CreateEventDTO());
+        model.addAttribute("eventTypeList", Arrays.asList(EventType.values()));
+        model.addAttribute("admissionTypeList", Arrays.asList(AdmissionType.values()));
+        return "organizer/forms/create-event-form";
+    }
+
+    @PostMapping("/organizer-panel/create_event")
+    public String createEvent(@Valid @ModelAttribute("createEventDTO") CreateEventDTO createEventDTO,
+                              BindingResult bindingResult,
+                              Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("eventTypeList", Arrays.asList(EventType.values()));
+            model.addAttribute("admissionTypeList", Arrays.asList(AdmissionType.values()));
+            return "organizer/forms/create-event-form";
+        } else {
+            EventDTO createdEvent = eventService.createEvent(currentUserFacade.getCurrentUser(), createEventDTO);
+            return "redirect:/organizer-panel/events/" + createdEvent.getId();
+        }
     }
 
     private String getCity(List<CityDTO> cities, String city) {
