@@ -31,4 +31,7 @@ public interface EventRepository extends PagingAndSortingRepository<Event, Long>
 
     @Query("SELECT e FROM Event e WHERE e.organizer = :organizer")
     Page<Event> findOrganizerEvents(@Param("organizer") AppUser organizer, Pageable pageable);
+
+    @Query("SELECT e FROM Event e WHERE e.organizer = :organizer AND e.city = :city")
+    Page<Event> findOrganizerEventsByCity(@Param("organizer") AppUser organizer, @Param("city") String city, Pageable pageable);
 }

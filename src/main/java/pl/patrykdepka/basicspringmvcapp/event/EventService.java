@@ -32,4 +32,6 @@ public interface EventService {
     EventDTO createEvent(AppUser user, CreateEventDTO newEvent);
 
     Page<EventCardDTO> findOrganizerEvents(AppUser user, Pageable pageable);
+
+    Page<EventCardDTO> findOrganizerEventsByCity(AppUser user, String city, Pageable pageable);
 }

@@ -123,9 +123,23 @@ public class EventController {
 
     @GetMapping("/organizer-panel/events")
     public String findOrganizerEvents(@RequestParam(name = "page", required = false) Integer pageNumber, Model model) {
+        model.addAttribute("cities", eventService.findAllCities());
         int page = pageNumber != null ? pageNumber : 1;
         PageRequest pageRequest = PageRequest.of(page - 1, 10, Sort.by(Sort.Direction.fromString("DESC"), "dateTime"));
         model.addAttribute("events", eventService.findOrganizerEvents(currentUserFacade.getCurrentUser(), pageRequest));
+        return "organizer/events";
+    }
+
+    @GetMapping("/organizer-panel/events/cities/{city}")
+    public String findOrganizerEventsByCity(@PathVariable String city,
+                                            @RequestParam(name = "page", required = false) Integer pageNumber, Model model) {
+        List<CityDTO> cities = eventService.findAllCities();
+        model.addAttribute("cities", cities);
+        city = getCity(cities, city);
+        model.addAttribute("cityName", city);
+        int page = pageNumber != null ? pageNumber : 1;
+        PageRequest pageRequest = PageRequest.of(page - 1, 10, Sort.by(Sort.Direction.fromString("DESC"), "dateTime"));
+        model.addAttribute("events", eventService.findOrganizerEventsByCity(currentUserFacade.getCurrentUser(), city, pageRequest));
         return "organizer/events";
     }
 
