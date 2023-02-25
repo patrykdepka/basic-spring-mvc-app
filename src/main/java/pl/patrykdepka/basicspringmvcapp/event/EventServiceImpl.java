@@ -93,6 +93,10 @@ public class EventServiceImpl implements EventService {
         return EventDTOMapper.mapToEventDTO(eventRepository.save(event));
     }
 
+    public Page<EventCardDTO> findOrganizerEvents(AppUser user, Pageable pageable) {
+        return EventCardDTOMapper.mapToEventCardDTOs(eventRepository.findOrganizerEvents(user, pageable));
+    }
+
     private String getCityNameWithoutPlCharacters(String city) {
         city = city.toLowerCase();
         city = city.replace("\\s", "-");

@@ -121,6 +121,14 @@ public class EventController {
         }
     }
 
+    @GetMapping("/organizer-panel/events")
+    public String findOrganizerEvents(@RequestParam(name = "page", required = false) Integer pageNumber, Model model) {
+        int page = pageNumber != null ? pageNumber : 1;
+        PageRequest pageRequest = PageRequest.of(page - 1, 10, Sort.by(Sort.Direction.fromString("DESC"), "dateTime"));
+        model.addAttribute("events", eventService.findOrganizerEvents(currentUserFacade.getCurrentUser(), pageRequest));
+        return "organizer/events";
+    }
+
     private String getCity(List<CityDTO> cities, String city) {
         for (CityDTO cityDTO : cities) {
             if (cityDTO.getNameWithoutPlCharacters().equals(city)) {
