@@ -2,6 +2,8 @@ package pl.patrykdepka.basicspringmvcapp.event.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
+import pl.patrykdepka.basicspringmvcapp.core.Image;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -12,6 +14,8 @@ public class CreateEventDTO {
     @NotNull(message = "{form.field.name.error.notNull.message}")
     @NotEmpty(message = "{form.field.name.error.notEmpty.message}")
     private String name;
+    @Image(width = 480, height = 270)
+    private MultipartFile eventImage;
     @NotNull(message = "{form.field.eventType.error.notNull.message}")
     @NotEmpty(message = "{form.field.eventType.error.notEmpty.message}")
     private String eventType;

@@ -8,6 +8,8 @@ import lombok.Setter;
 public class EventDTO {
     private Long id;
     private String name;
+    private String imageType;
+    private String imageData;
     private String eventType;
     private String date;
     private String hour;
@@ -25,6 +27,8 @@ public class EventDTO {
     public static class EventDTOBuilder {
         private Long id;
         private String name;
+        private String imageType;
+        private String imageData;
         private String eventType;
         private String date;
         private String hour;
@@ -46,6 +50,16 @@ public class EventDTO {
 
         public EventDTOBuilder withName(String name) {
             this.name = name;
+            return this;
+        }
+
+        public EventDTOBuilder withImageType(String imageType) {
+            this.imageType = imageType;
+            return this;
+        }
+
+        public EventDTOBuilder withImageData(String imageData) {
+            this.imageData = imageData;
             return this;
         }
 
@@ -118,6 +132,8 @@ public class EventDTO {
             EventDTO eventDTO = new EventDTO();
             eventDTO.setId(id);
             eventDTO.setName(name);
+            eventDTO.setImageType(imageType);
+            eventDTO.setImageData(imageData);
             eventDTO.setEventType(eventType);
             eventDTO.setDate(date);
             eventDTO.setHour(hour);

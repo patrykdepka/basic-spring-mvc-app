@@ -14,6 +14,7 @@ import pl.patrykdepka.basicspringmvcapp.event.enumeration.AdmissionType;
 import pl.patrykdepka.basicspringmvcapp.event.enumeration.EventType;
 import pl.patrykdepka.basicspringmvcapp.event.mapper.EventCardDTOMapper;
 import pl.patrykdepka.basicspringmvcapp.event.mapper.EventDTOMapper;
+import pl.patrykdepka.basicspringmvcapp.eventimage.EventImageService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,9 +24,11 @@ import java.util.List;
 @Service
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
+    private final EventImageService eventImageService;
 
-    public EventServiceImpl(EventRepository eventRepository) {
+    public EventServiceImpl(EventRepository eventRepository, EventImageService eventImageService) {
         this.eventRepository = eventRepository;
+        this.eventImageService = eventImageService;
     }
 
     public List<EventCardDTO> findFirst10UpcomingEvents() {
@@ -81,6 +84,7 @@ public class EventServiceImpl implements EventService {
     public EventDTO createEvent(AppUser user, CreateEventDTO newEvent) {
         Event event = new Event();
         event.setName(newEvent.getName());
+        event.setEventImage(eventImageService.createEventImage(newEvent.getEventImage()));
         event.setEventType(EventType.valueOf(newEvent.getEventType().toUpperCase()).getDisplayName());
         event.setDateTime(LocalDateTime.parse(newEvent.getDateTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         event.setLanguage(newEvent.getLanguage());

@@ -12,6 +12,8 @@ public class EventDTOMapper {
         return new EventDTO.EventDTOBuilder()
                 .withId(event.getId())
                 .withName(event.getName())
+                .withImageType(event.getEventImage().getFileType())
+                .withImageData(Base64.getEncoder().encodeToString(event.getEventImage().getFileData()))
                 .withEventType(event.getEventType())
                 .withDate(event.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
                 .withHour(event.getDateTime().format(DateTimeFormatter.ofPattern("HH:mm")))
