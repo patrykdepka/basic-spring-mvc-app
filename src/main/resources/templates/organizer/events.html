@@ -37,7 +37,7 @@
         </div>
         <div class="event-list">
             <th:block th:if="${events.totalElements > 0}" th:each="event: ${events}">
-                <a style="color: gray; text-decoration: none;" th:href="@{'/events/' + ${event.id}}">
+                <a style="color: gray; text-decoration: none;" th:href="@{'/organizer-panel/events/' + ${event.id}}">
                     <div class="row align-items-center event-card" style="width: 100%">
                         <div class="col-sm-2">
                             <span class="event-date" th:text="${event.date} + ' | ' + ${event.dayOfWeek}">03.01 | wt.</span>

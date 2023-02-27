@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.patrykdepka.basicspringmvcapp.core.CurrentUserFacade;
 import pl.patrykdepka.basicspringmvcapp.event.dto.CityDTO;
 import pl.patrykdepka.basicspringmvcapp.event.dto.CreateEventDTO;
+import pl.patrykdepka.basicspringmvcapp.event.dto.EditEventDTO;
 import pl.patrykdepka.basicspringmvcapp.event.dto.EventDTO;
 import pl.patrykdepka.basicspringmvcapp.event.enumeration.AdmissionType;
 import pl.patrykdepka.basicspringmvcapp.event.enumeration.EventType;
@@ -96,7 +97,7 @@ public class EventController {
     @GetMapping("/organizer-panel/events/{id}")
     public String getOrganizerEvent(@PathVariable Long id, Model model) {
         model.addAttribute("event", eventService.findOrganizerEvent(currentUserFacade.getCurrentUser(), id));
-        return "event";
+        return "organizer/event";
     }
 
     @GetMapping("/organizer-panel/create_event")
@@ -141,6 +142,24 @@ public class EventController {
         PageRequest pageRequest = PageRequest.of(page - 1, 10, Sort.by(Sort.Direction.fromString("DESC"), "dateTime"));
         model.addAttribute("events", eventService.findOrganizerEventsByCity(currentUserFacade.getCurrentUser(), city, pageRequest));
         return "organizer/events";
+    }
+
+    @GetMapping("/organizer-panel/events/{id}/edit")
+    public String showEditEventForm(@PathVariable Long id, Model model) {
+        model.addAttribute("editEventDTO", eventService.findEventToEdit(currentUserFacade.getCurrentUser(), id));
+        model.addAttribute("eventTypeList", Arrays.asList(EventType.values()));
+        model.addAttribute("admissionTypeList", Arrays.asList(AdmissionType.values()));
+        return "organizer/forms/edit-event-form";
+    }
+
+    @PatchMapping("/organizer-panel/events")
+    public String updateEvent(@Valid @ModelAttribute("editEventDTO") EditEventDTO editEventDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "organizer/forms/edit-event-form";
+        } else {
+            eventService.updateEvent(currentUserFacade.getCurrentUser(), editEventDTO);
+            return "redirect:/organizer-panel/events/" + editEventDTO.getId();
+        }
     }
 
     private String getCity(List<CityDTO> cities, String city) {

@@ -3,10 +3,7 @@ package pl.patrykdepka.basicspringmvcapp.event;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import pl.patrykdepka.basicspringmvcapp.appuser.AppUser;
-import pl.patrykdepka.basicspringmvcapp.event.dto.CityDTO;
-import pl.patrykdepka.basicspringmvcapp.event.dto.CreateEventDTO;
-import pl.patrykdepka.basicspringmvcapp.event.dto.EventCardDTO;
-import pl.patrykdepka.basicspringmvcapp.event.dto.EventDTO;
+import pl.patrykdepka.basicspringmvcapp.event.dto.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,4 +31,8 @@ public interface EventService {
     Page<EventCardDTO> findOrganizerEvents(AppUser user, Pageable pageable);
 
     Page<EventCardDTO> findOrganizerEventsByCity(AppUser user, String city, Pageable pageable);
+
+    EditEventDTO findEventToEdit(AppUser user, Long id);
+
+    void updateEvent(AppUser user, EditEventDTO editEventDTO);
 }
