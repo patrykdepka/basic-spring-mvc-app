@@ -8,6 +8,8 @@ import pl.patrykdepka.basicspringmvcapp.appuser.AppUser;
 import pl.patrykdepka.basicspringmvcapp.appuser.AppUserNotFoundException;
 import pl.patrykdepka.basicspringmvcapp.appuser.AppUserRepository;
 
+import java.util.Optional;
+
 @Component
 public class CurrentUserFacadeImpl implements CurrentUserFacade {
     private final AppUserRepository appUserRepository;
@@ -25,5 +27,19 @@ public class CurrentUserFacadeImpl implements CurrentUserFacade {
         return appUserRepository
                 .findByEmail(currentUser.getName())
                 .orElseThrow(() -> new AppUserNotFoundException(String.format("User with email %s not found", currentUser.getName())));
+    }
+
+    @Override
+    public Optional<AppUser> getCurrentUser2() {
+        Authentication currentUser = SecurityContextHolder.getContext().getAuthentication();
+        if (currentUser == null || currentUser.getPrincipal().equals("anonymousUser")) {
+            return Optional.empty();
+        }
+        Optional<AppUser> userOpt = appUserRepository.findByEmail(currentUser.getName());
+        if (userOpt.isPresent()) {
+            return userOpt;
+        }
+
+        throw new AppUserNotFoundException(String.format("User with email %s not found", currentUser.getName()));
     }
 }

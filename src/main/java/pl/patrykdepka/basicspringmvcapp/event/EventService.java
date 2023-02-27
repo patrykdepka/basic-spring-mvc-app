@@ -7,6 +7,7 @@ import pl.patrykdepka.basicspringmvcapp.event.dto.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface EventService {
 
@@ -35,4 +36,8 @@ public interface EventService {
     EditEventDTO findEventToEdit(AppUser user, Long id);
 
     void updateEvent(AppUser user, EditEventDTO editEventDTO);
+
+    void addUserToEventParticipantsList(AppUser user, Long id);
+
+    boolean checkIfCurrentUserIsParticipant(Optional<AppUser> user, EventDTO event);
 }

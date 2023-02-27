@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -130,6 +131,22 @@ public class EventServiceImpl implements EventService {
                             throw new EventNotFoundException("Event with ID " + editEventDTO.getId() + " not found");
                         }
                 );
+    }
+
+    @Transactional
+    public void addUserToEventParticipantsList(AppUser user, Long id) {
+        eventRepository
+                .findById(id)
+                .map(event -> event.addParticipant(user))
+                .orElseThrow(() -> new EventNotFoundException("Event with ID " + id + " not found"));
+    }
+
+    public boolean checkIfCurrentUserIsParticipant(Optional<AppUser> user, EventDTO event) {
+        if (user.isPresent()) {
+            return event.checkIfCurrentUserIsParticipant(user.get());
+        }
+
+        return false;
     }
 
     private String getCityNameWithoutPlCharacters(String city) {

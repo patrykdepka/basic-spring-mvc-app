@@ -2,6 +2,9 @@ package pl.patrykdepka.basicspringmvcapp.event.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import pl.patrykdepka.basicspringmvcapp.appuser.AppUser;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,6 +26,11 @@ public class EventDTO {
     private String organizerImageData;
     private String organizerName;
     private String description;
+    private List<AppUser> participants;
+
+    public boolean checkIfCurrentUserIsParticipant(AppUser user) {
+        return participants.contains(user);
+    }
 
     public static class EventDTOBuilder {
         private Long id;
@@ -42,6 +50,7 @@ public class EventDTO {
         private String organizerImageData;
         private String organizerName;
         private String description;
+        private List<AppUser> participants;
 
         public EventDTOBuilder withId(Long id) {
             this.id = id;
@@ -128,6 +137,11 @@ public class EventDTO {
             return this;
         }
 
+        public EventDTOBuilder withParticipants(List<AppUser> participants) {
+            this.participants = participants;
+            return this;
+        }
+
         public EventDTO build() {
             EventDTO eventDTO = new EventDTO();
             eventDTO.setId(id);
@@ -147,6 +161,7 @@ public class EventDTO {
             eventDTO.setOrganizerImageData(organizerImageData);
             eventDTO.setOrganizerName(organizerName);
             eventDTO.setDescription(description);
+            eventDTO.setParticipants(participants);
             return eventDTO;
         }
     }

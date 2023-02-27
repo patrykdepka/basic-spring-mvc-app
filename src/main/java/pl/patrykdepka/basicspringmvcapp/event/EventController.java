@@ -39,6 +39,7 @@ public class EventController {
     public String getEvent(@PathVariable Long id, Model model) {
         EventDTO event = eventService.findEvent(id);
         model.addAttribute("event", event);
+        model.addAttribute("currentUserIsParticipant", eventService.checkIfCurrentUserIsParticipant(currentUserFacade.getCurrentUser2(), event));
         return "event";
     }
 
@@ -160,6 +161,12 @@ public class EventController {
             eventService.updateEvent(currentUserFacade.getCurrentUser(), editEventDTO);
             return "redirect:/organizer-panel/events/" + editEventDTO.getId();
         }
+    }
+
+    @PatchMapping("/events/{id}/join")
+    public String joinToEvent(@PathVariable Long id) {
+        eventService.addUserToEventParticipantsList(currentUserFacade.getCurrentUser(), id);
+        return "redirect:/events/" + id;
     }
 
     private String getCity(List<CityDTO> cities, String city) {

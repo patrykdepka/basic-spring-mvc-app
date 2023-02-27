@@ -27,6 +27,7 @@ public class EventDTOMapper {
                 .withOrganizerImageData(Base64.getEncoder().encodeToString(event.getOrganizer().getProfileImage().getFileData()))
                 .withOrganizerName(event.getOrganizer().getFirstName() + " " + event.getOrganizer().getLastName())
                 .withDescription(event.getDescription())
+                .withParticipants(event.getParticipants())
                 .build();
     }
 }
